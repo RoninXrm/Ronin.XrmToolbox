@@ -438,6 +438,7 @@ namespace Ronin.XrmToolbox
                     }
 
                     RestoreMappings();
+                    TryInferAndPersistDeclinedPrefix(webResourceRows.ToList(), selectedSolution);
                     fileService.AutoMapRowsByRootFolder(webResourceRows, txtRootFolder.Text, GetCurrentDeclinedPrefixTokens());
                     dgvWebResources.Refresh();
                     LogInfo("Loaded {0} web resource(s) for solution {1}", webResourceRows.Count, selectedSolution.DisplayName);
@@ -578,6 +579,53 @@ namespace Ronin.XrmToolbox
                 }
 
                 row.LocalFilePath = relativePath;
+            }
+        }
+
+        /// <summary>
+        /// Detects if all web resource names share the same prefix matching the publisher prefix
+        /// and that folder does not exist in the root folder. If so, auto-persist it as a declined prefix
+        /// to suppress future prompts.
+        /// </summary>
+        private void TryInferAndPersistDeclinedPrefix(List<WebResourceRow> rows, SolutionListItem selectedSolution)
+        {
+            if (rows == null || rows.Count == 0 || selectedSolution == null || string.IsNullOrWhiteSpace(txtRootFolder.Text))
+            {
+                return;
+            }
+
+            var publisherPrefix = selectedSolution.PublisherPrefix;
+            if (string.IsNullOrWhiteSpace(publisherPrefix))
+            {
+                return;
+            }
+
+            var prefixToken = publisherPrefix + "_";
+            var prefixFolderPath = Path.Combine(txtRootFolder.Text, prefixToken);
+            
+            // Skip if the prefix folder already exists
+            if (Directory.Exists(prefixFolderPath))
+            {
+                return;
+            }
+
+            var solutionSettings = GetOrCreateCurrentSolutionSettings();
+            var declinedPrefixes = solutionSettings.DeclinedPublisherPrefixFolders ?? new List<string>();
+
+            // Skip if already marked as declined
+            if (declinedPrefixes.Any(p => string.Equals(p, prefixToken, StringComparison.OrdinalIgnoreCase)))
+            {
+                return;
+            }
+
+            // Check if ALL web resources have names starting with the prefix token
+            var allRowsHavePrefix = rows.All(r => r.Name.StartsWith(prefixToken, StringComparison.OrdinalIgnoreCase));
+
+            if (allRowsHavePrefix)
+            {
+                declinedPrefixes.Add(prefixToken);
+                solutionSettings.DeclinedPublisherPrefixFolders = declinedPrefixes;
+                LogInfo("Auto-detected and persisted declined prefix: {0}", prefixToken);
             }
         }
 
@@ -785,6 +833,8 @@ namespace Ronin.XrmToolbox
                 row.LocalFilePath = null;
             }
 
+            var selectedSolution = cmbSolutions.SelectedItem as SolutionListItem;
+            TryInferAndPersistDeclinedPrefix(webResourceRows.ToList(), selectedSolution);
             fileService.AutoMapRowsByRootFolder(webResourceRows, txtRootFolder.Text, GetCurrentDeclinedPrefixTokens());
             dgvWebResources.Refresh();
             LogInfo("Reset mappings and auto-mapped {0} web resource row(s)", webResourceRows.Count);

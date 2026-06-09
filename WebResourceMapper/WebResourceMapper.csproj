@@ -8,8 +8,8 @@
     <ProjectGuid>{6E50AAC3-03DE-4C1A-86B1-D48A0B812D16}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WebResourceMapper</RootNamespace>
-    <AssemblyName>WebResourceMapper</AssemblyName>
+    <RootNamespace>Ronin.XrmToolbox</RootNamespace>
+    <AssemblyName>Ronin.XrmToolbox.WebResourceMapper</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
