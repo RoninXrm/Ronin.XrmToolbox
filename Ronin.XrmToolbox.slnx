@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="UserTimezoneManager/UserTimezoneManager.csproj" Id="a1b2c3d4-e5f6-7890-abcd-ef1234567890" />
   <Project Path="WebResourceMapper/WebResourceMapper.csproj" Id="6e50aac3-03de-4c1a-86b1-d48a0b812d16" />
 </Solution>
