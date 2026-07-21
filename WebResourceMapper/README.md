@@ -105,7 +105,9 @@ No lines of code were written by a human. Even this README (apart from this sect
 
 ## Credits
 
-Icons provided by [**Flaticon (Pixel Perfect)**](https://www.flaticon.com/authors/pixel-perfect) and licensed under [**Creative Commons BY 3.0**](https://creativecommons.org/licenses/by/3.0/).
+Icons provided by:
+- [**Flaticon (Pixel Perfect)**](https://www.flaticon.com/authors/pixel-perfect)
+- [**Flaticon (Andrean Prabowo)**] (https://www.flaticon.com/authors/andrean-prabowo)
 
 ---
 
